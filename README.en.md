@@ -32,18 +32,23 @@ The project started as a personal portfolio named **MyDevFolioHub** and evolved 
 
 ## How was it built?
 
-Deviloq is a web app built with **HTML, CSS, and JavaScript**, without a heavy frontend framework. The frontend renders the pages and handles interactions, languages, and themes. **Supabase** provides authentication, data, and file storage. The app reads public GitHub data to highlight a user's work. Static web files are hosted on **GitHub Pages**, and **Capacitor** packages the same interface for Android.
+Deviloq is a web app built with **HTML, CSS, and JavaScript**, without a heavy frontend framework. The frontend renders the pages and handles interactions, languages, and themes. **Supabase** provides authentication, data, and file storage, while **Brevo** delivers authentication email through the SMTP settings in Supabase. The app reads public GitHub data to highlight a user's work. Static web files are hosted on **GitHub Pages**, and **Capacitor** packages the same interface for Android.
 
 | Part | Technology and role |
 | --- | --- |
 | Frontend | HTML, CSS, and JavaScript for the home, community, portfolio, and dashboard views |
 | Accounts and data | Supabase Auth, Database, and Storage |
+| Account email | Brevo SMTP sends email confirmation and password recovery messages through Supabase Auth |
 | GitHub integration | GitHub API for public repositories and languages |
 | Installable web app | Web Manifest and Service Worker for public app files and the offline fallback |
 | Android | Capacitor, Gradle, and a signed APK for official releases |
 | Verification | Playwright tests for public flows, mobile, Arabic, RTL, and horizontal overflow |
 
 In short: **create an account → add content in the dashboard → save it to Supabase → share a public portfolio link**. The Android app uses the same frontend files, so design improvements can reach both web and mobile in a new release.
+
+### Account email and redirects
+
+**Supabase Auth** creates confirmation and password recovery messages and chooses the return URL; **Brevo** delivers those messages over SMTP. The site URL, allowed redirect URLs, and SMTP credentials are configured in the Supabase dashboard. Email passwords and API keys are not stored in this repository. After changing the website address, update the redirect URLs and any hard-coded links in email templates, then test an actual message. Sending volume depends on the Brevo plan and Supabase Auth rate limits.
 
 ## Run locally
 
