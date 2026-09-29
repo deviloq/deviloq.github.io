@@ -4,7 +4,7 @@
 
 **Build a portfolio that shows your work and your growth as a developer, then share it with one link.**
 
-[Live website](https://mydevfoliohub.github.io/) · [Latest Android release](https://github.com/mydevfoliohub/mydevfoliohub.github.io/releases/latest)
+[Live website](https://deviloq.github.io/) · [Latest Android release](https://github.com/deviloq/deviloq.github.io/releases/latest)
 
 ![Deviloq preview](./social-preview.png)
 

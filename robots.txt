@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mydevfoliohub.github.io/sitemap.xml
+Sitemap: https://deviloq.github.io/sitemap.xml

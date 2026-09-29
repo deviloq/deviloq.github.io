@@ -4,7 +4,7 @@
 
 **ابنِ بورتفوليو يوضح أعمالك ورحلتك التقنية، وشاركه برابط واحد.**
 
-[الموقع المباشر](https://mydevfoliohub.github.io/) · [أحدث إصدار Android](https://github.com/mydevfoliohub/mydevfoliohub.github.io/releases/latest)
+[الموقع المباشر](https://deviloq.github.io/) · [أحدث إصدار Android](https://github.com/deviloq/deviloq.github.io/releases/latest)
 
 ![معاينة Deviloq](./social-preview.png)
 

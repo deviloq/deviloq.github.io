@@ -3,6 +3,6 @@ const BRAND = Object.freeze({
   label: "DEVILOQ",
   tagline: "Build. Learn. Share. Grow.",
   version: "v2.3.6",
-  productionUrl: "https://mydevfoliohub.github.io/",
-  socialImage: "https://mydevfoliohub.github.io/social-preview.png"
+  productionUrl: "https://deviloq.github.io/",
+  socialImage: "https://deviloq.github.io/social-preview.png"
 });

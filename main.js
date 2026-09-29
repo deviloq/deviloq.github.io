@@ -3,7 +3,7 @@
   const SUPABASE_KEY = "sb_publishable_bzk-PSNChJcwFG42CqKcOg_PPhY-Wad";
 
   const PUBLIC_SITE_URL =
-    "https://mydevfoliohub.github.io/";
+    "https://deviloq.github.io/";
 
   const supabaseClient =
     supabase.createClient(
@@ -2934,7 +2934,7 @@
         { text: "✓ GitHub connected", className: "is-success" },
         { text: "✓ Learning journey online", className: "is-success" },
         { text: "✓ Portfolio published", className: "is-success" },
-        { text: "→ mydevfoliohub.github.io/?u=you", className: "is-url" }
+        { text: "→ deviloq.github.io/?u=you", className: "is-url" }
       ]
     },
     deploy: {
@@ -2943,7 +2943,7 @@
         { text: "✓ Build ready in 41s", className: "is-success" },
         { text: "✓ SSL active", className: "is-success" },
         { text: "✓ CDN warmed in 12 regions", className: "is-success" },
-        { text: "→ mydevfoliohub.github.io/?u=you", className: "is-url" }
+        { text: "→ deviloq.github.io/?u=you", className: "is-url" }
       ]
     },
     stats: {
