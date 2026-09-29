@@ -1,5 +1,7 @@
 # Deviloq
 
+**اللغة:** العربية · [English](./README.en.md)
+
 **ابنِ بورتفوليو يوضح أعمالك ورحلتك التقنية، وشاركه برابط واحد.**
 
 [الموقع المباشر](https://mydevfoliohub.github.io/) · [أحدث إصدار Android](https://github.com/mydevfoliohub/mydevfoliohub.github.io/releases/latest)
@@ -88,9 +90,3 @@ sw.js               تخزين ملفات الويب العامة للاستخد
 - المحتوى الخاص بالحسابات يتطلب اتصالًا بالشبكة؛ صفحة عدم الاتصال لا تعني أن التحرير والحفظ يعملان دون إنترنت.
 - الإصدارات الرسمية لأندرويد تستخدم توقيعًا ثابتًا ورقم إصدار متزايدًا حتى يمكن تثبيتها كتحديث دون حذف التطبيق.
 - تراخيص الموارد المضمّنة موثقة في ملفاتها، ومنها تراخيص الخطوط والأيقونات، إضافة إلى [ترخيص ملفات HTML5 Boilerplate](./LICENSE.txt).
-
----
-
-### English summary
-
-**Deviloq** is a bilingual developer portfolio platform for publishing projects, skills, learning progress, credentials, and a tailored resume through one shareable profile. It began as a personal portfolio called MyDevFolioHub and grew into a multi-user product. The web interface uses HTML, CSS, and JavaScript; Supabase provides authentication, data, and storage; GitHub supplies public repository highlights; Capacitor packages the same interface for Android. The public website is hosted on GitHub Pages.
