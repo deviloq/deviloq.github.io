@@ -1,6 +1,6 @@
 {
   "name": "deviloq-mobile",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "private": true,
   "scripts": {
     "vendor:supabase": "node scripts/vendor-supabase.cjs",

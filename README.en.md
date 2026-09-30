@@ -27,6 +27,7 @@ The project started as a personal portfolio named **MyDevFolioHub** and evolved 
 - Portfolio themes and section ordering, with a live preview while editing.
 - Highlights of public GitHub repositories and programming languages when an account is connected.
 - Public sections for projects, labs, learning, education, certificates, testimonials, and social links.
+- Certificates can use a public HTTPS link or an uploaded file; their links appear in the portfolio and printable resume.
 - Arabic and English interfaces with **RTL** support and layouts for desktop, tablet, and mobile.
 - An installable **PWA** with an offline fallback page, plus an Android app built from the same web interface.
 

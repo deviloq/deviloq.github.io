@@ -181,7 +181,7 @@ test('portfolio navigation keeps extra sections reachable on desktop and mobile'
   expect(errors).toEqual([]);
 });
 
-test('owner dashboard mobile sections open without overflow', async ({ page }) => {
+test('owner dashboard keeps frequent tasks reachable without duplicate mobile navigation', async ({ page }) => {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.setViewportSize({width:375,height:812});
@@ -203,18 +203,85 @@ test('owner dashboard mobile sections open without overflow', async ({ page }) =
   await page.route('**/auth/v1/**', route => route.fulfill({json:{id:'00000000-0000-4000-8000-000000000001',email:'sample@example.test'}}));
   await page.goto('/?view=dashboard');
   await expect(page.locator('#portfolioView')).toBeVisible();
-  const menu = page.locator('#portfolioMenuButton');
-  await menu.click();
-  await expect(menu).toHaveAttribute('aria-expanded','true');
-  await expect(page.locator('#portfolioSectionNav')).toBeVisible();
-  const lastLink = page.locator('#portfolioSectionNav a:visible').last();
-  await lastLink.scrollIntoViewIfNeeded();
-  const linkBounds = await lastLink.boundingBox();
-  expect(linkBounds.y + linkBounds.height).toBeLessThanOrEqual(812);
+  await expect(page.locator('#dashboardBar')).toBeVisible();
+  await expect(page.locator('#portfolioMenuButton')).toBeHidden();
+  await expect(page.locator('#dashboardBar .dashboard-quick-actions')).toBeHidden();
+  const create = page.locator('#dashboardMobileCreate');
+  await expect(create.locator('summary')).toBeVisible();
+  await create.locator('summary').click();
+  await expect(create.getByRole('button',{name:'Certificate'})).toBeVisible();
+  await create.getByRole('button',{name:'Certificate'}).click();
+  await expect(create).not.toHaveAttribute('open','');
+  await expect(page.locator('#certificateModal')).toBeVisible();
+  await expect(page.locator('#certificateUrl')).toBeVisible();
+  await page.locator('#certificateModal .close-modal').click();
+  await page.locator('#dashboardSectionTools > summary').click();
+  await expect(page.locator('#dashboardSectionTools a[href="#certificates"]')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   await page.evaluate(() => setLanguage('ar', false));
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(create.locator('summary')).toContainText('إضافة محتوى');
+  await expect(page.locator('#dashboardWelcome')).toContainText('إدارة');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   await expectViewportFit(page, [430, 768, 1024, 1440, 1920]);
+  expect(errors).toEqual([]);
+});
+
+test('certificate links save without upload and remain clickable in Resume Studio', async ({ page }) => {
+  const owner = '00000000-0000-4000-8000-000000000001';
+  const certificateUrl = 'https://example.com/certificates/verify-123';
+  const saved = [];
+  let uploads = 0;
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (request.method() === 'POST' && request.url().includes('/storage/v1/object/')) uploads++;
+  });
+  await page.setViewportSize({width:375,height:812});
+  await page.addInitScript(owner => {
+    const user = {id:owner,email:'sample@example.test',aud:'authenticated',role:'authenticated'};
+    localStorage.setItem('sb-mjwtiliulpolrypywkei-auth-token', JSON.stringify({
+      access_token:'test-token',refresh_token:'test-refresh',token_type:'bearer',
+      expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,user
+    }));
+  }, owner);
+  await page.route('**/rest/v1/**', route => {
+    const url = new URL(route.request().url());
+    if (url.pathname.endsWith('/certificates')) {
+      if (route.request().method() === 'POST') {
+        saved.push({...route.request().postDataJSON(),id:'00000000-0000-4000-8000-000000000002'});
+        return route.fulfill({status:201,json:[]});
+      }
+      return route.fulfill({json:saved});
+    }
+    const data = url.pathname.endsWith('/profiles')
+      ? [{user_id:owner,username:'sample',display_name:'Sample Developer',bio:'Building useful things.',is_public:true,tech_stack:[]}]
+      : [];
+    return route.fulfill({json:data});
+  });
+  await page.route('**/auth/v1/**', route => route.fulfill({json:{id:owner,email:'sample@example.test'}}));
+  await page.goto('/?view=dashboard');
+  await page.locator('#dashboardMobileCreate summary').click();
+  await page.locator('#dashboardMobileCreate').getByRole('button',{name:'Certificate'}).click();
+  await page.locator('#certificateName').fill('Advanced Testing');
+  await page.locator('#certificateOrganization').fill('Example Academy');
+  await page.locator('#certificateUrl').fill(certificateUrl);
+  await page.locator('#certificateModal .save-certificate').click();
+  await expect(page.locator('#certificateModal')).toBeHidden();
+  expect(saved).toHaveLength(1);
+  expect(saved[0].file_path).toBe(certificateUrl);
+  expect(saved[0].file_type).toBe('text/uri-list');
+  expect(uploads).toBe(0);
+  await expect(page.locator('#certificatesGrid .new-certificate-card')).toHaveCount(1);
+  await page.locator('.dashboard-mobile-workspace').getByRole('button',{name:'Resume Studio'}).click();
+  const link = page.frameLocator('#portfolioCvFrame').getByRole('link',{name:'View certificate ↗'});
+  await expect(link).toHaveAttribute('href',certificateUrl);
+  await expect(link).toHaveAttribute('target','_blank');
+  await page.context().route('https://example.com/certificates/verify-123',route => route.fulfill({body:'Verified certificate'}));
+  const popupPromise = page.context().waitForEvent('page');
+  await link.click();
+  const popup = await popupPromise;
+  await expect(popup).toHaveURL(certificateUrl);
+  await popup.close();
   expect(errors).toEqual([]);
 });

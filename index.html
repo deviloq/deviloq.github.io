@@ -454,7 +454,11 @@
     <!-- Add new release notes here, newest first. -->
     <div class="release-list" id="releaseList">
       <article class="release-entry">
-        <div class="release-date"><time datetime="2026-09-29">Sep 29, 2026</time><span data-en-html="Site address update" data-ar-html="تحديث رابط الموقع">Site address update</span><span class="release-latest" data-en-html="LATEST" data-ar-html="الأحدث">LATEST</span></div>
+        <div class="release-date"><time datetime="2026-09-30">Sep 30, 2026</time><span data-en-html="Portfolio update" data-ar-html="تحديث البورتفوليو">Portfolio update</span><span class="release-latest" data-en-html="LATEST" data-ar-html="الأحدث">LATEST</span></div>
+        <div><h3 data-en-html="v2.3.8 — Simpler mobile dashboard and linked certificates" data-ar-html="v2.3.8 — لوحة جوال أبسط وروابط للشهادات">v2.3.8 — Simpler mobile dashboard and linked certificates</h3><p data-en-html="The mobile dashboard brings its common tasks to the top and removes duplicate section navigation. Certificates can now use a public HTTPS link instead of an uploaded file, and the link is clickable in Resume Studio and exported CVs." data-ar-html="أصبحت مهام لوحة التحكم الأساسية قريبة في أعلى شاشة الجوال مع إزالة قائمة الأقسام المكررة. يمكن إضافة الشهادة برابط HTTPS عام بدل رفع ملف، ويظهر الرابط قابلًا للنقر في استوديو السيرة وملف CV المُصدّر.">The mobile dashboard brings its common tasks to the top and removes duplicate section navigation. Certificates can now use a public HTTPS link instead of an uploaded file, and the link is clickable in Resume Studio and exported CVs.</p><div class="release-tags"><span>v2.3.8</span><span data-en-html="Mobile dashboard" data-ar-html="لوحة الجوال">Mobile dashboard</span><span data-en-html="Certificates" data-ar-html="الشهادات">Certificates</span><span data-en-html="Resume" data-ar-html="السيرة الذاتية">Resume</span></div></div>
+      </article>
+      <article class="release-entry release-history-item" hidden>
+        <div class="release-date"><time datetime="2026-09-29">Sep 29, 2026</time><span data-en-html="Site address update" data-ar-html="تحديث رابط الموقع">Site address update</span></div>
         <div><h3 data-en-html="v2.3.7 — Deviloq has a new address" data-ar-html="v2.3.7 — رابط جديد لـ Deviloq">v2.3.7 — Deviloq has a new address</h3><p data-en-html="The website now lives at deviloq.github.io. Portfolio sharing, account email links, and the Android app use the new address while existing accounts and app updates keep working." data-ar-html="أصبح الموقع على deviloq.github.io. تستخدم روابط مشاركة البورتفوليو ورسائل الحساب وتطبيق أندرويد العنوان الجديد، مع الحفاظ على الحسابات وإمكانية تحديث التطبيق.">The website now lives at deviloq.github.io. Portfolio sharing, account email links, and the Android app use the new address while existing accounts and app updates keep working.</p><div class="release-tags"><span>v2.3.7</span><span data-en-html="New address" data-ar-html="رابط جديد">New address</span><span data-en-html="Android" data-ar-html="أندرويد">Android</span></div></div>
       </article>
       <article class="release-entry release-history-item" hidden>
@@ -687,7 +691,7 @@
 
     <div class="platform-footer-bottom">
       <span>© 2026 Deviloq</span>
-      <span>Deviloq v2.3.7</span>
+      <span>Deviloq v2.3.8</span>
     </div>
   </footer>
 
@@ -1472,6 +1476,21 @@
   </div>
 
   <p id="ownerActionStatus" class="platform-message" role="status" aria-live="polite"></p>
+  <div class="dashboard-mobile-workspace">
+    <details class="dashboard-mobile-create" id="dashboardMobileCreate">
+      <summary data-en-html="＋ Add content" data-ar-html="＋ إضافة محتوى">＋ Add content</summary>
+      <div class="dashboard-mobile-create-options">
+        <button type="button" onclick="openItemEditor('project')" data-en-html="Project" data-ar-html="مشروع">Project</button>
+        <button type="button" onclick="openCertificateForm()" data-en-html="Certificate" data-ar-html="شهادة">Certificate</button>
+        <button type="button" onclick="openLearningPostEditor()" data-en-html="Learning post" data-ar-html="منشور تعلّم">Learning post</button>
+        <button type="button" onclick="openItemEditor('lab')" data-en-html="Lab" data-ar-html="مختبر">Lab</button>
+      </div>
+    </details>
+    <button type="button" class="platform-button" onclick="openProfileEditor()" data-en-html="Edit profile" data-ar-html="تعديل الملف">Edit profile</button>
+    <button type="button" class="platform-button" onclick="openResumeStudio()" data-en-html="Resume Studio" data-ar-html="استوديو السيرة">Resume Studio</button>
+    <button type="button" class="platform-button" onclick="viewMyPortfolio()" data-en-html="View portfolio" data-ar-html="عرض البورتفوليو">View portfolio</button>
+    <button type="button" class="platform-button" onclick="openSharePortfolioModal()" data-en-html="Share portfolio" data-ar-html="مشاركة البورتفوليو">Share portfolio</button>
+  </div>
   <h3 class="dashboard-overview-title">Dashboard Overview</h3>
   <div class="dashboard-insights-grid">
     <section class="dashboard-insight-card completion-card" aria-labelledby="portfolioCompletionTitle">
@@ -1517,7 +1536,7 @@
     </section>
   </div>
 
-  <h3>Quick Actions</h3>
+  <h3 class="dashboard-quick-actions-heading">Quick Actions</h3>
   <div class="dashboard-quick-actions"><button type="button" class="platform-button" onclick="openProfileEditor()">Edit Profile</button><button type="button" class="platform-button" onclick="openResumeStudio()">▤ Resume Studio</button><button type="button" class="platform-button" onclick="openSharePortfolioModal()">Share Portfolio</button><button type="button" class="platform-button" onclick="copyMyPortfolioLink(this)">Copy Portfolio Link</button><button type="button" class="platform-button" onclick="viewMyPortfolio()">View Portfolio</button></div>
   <div class="dashboard-account-actions"><button type="button" class="platform-button" data-account-control onclick="openAccountSettings()">Account Settings</button><button type="button" class="platform-button" data-platform-admin hidden onclick="openPlatformAdmin()">Admin Dashboard</button><button type="button" class="platform-button notification-bell" data-account-control data-notification-bell aria-label="Notifications" aria-expanded="false" aria-haspopup="dialog" aria-controls="notificationsDialog" onclick="openNotifications()"><span aria-hidden="true">🔔</span><span class="notification-badge" data-notification-count hidden></span></button></div>
   <details class="dashboard-section-tools" id="dashboardSectionTools">
@@ -3628,7 +3647,7 @@ Dedicated to learning cybersecurity fundamentals, networking, and ethical hackin
 
       <div class="resume-step-actions"><button type="button" class="platform-button" id="resumeStepBack" onclick="moveResumeStep(-1)">Back</button><button type="button" class="platform-button primary" id="resumeStepNext" onclick="moveResumeStep(1)">Next</button><button type="button" class="resume-preview-jump" onclick="scrollResumePreviewIntoView()">Preview ↓</button></div>
     </aside>
-    <div class="resume-workspace"><div class="resume-preview-label"><span>LIVE A4 PREVIEW</span><span id="resumePages" aria-live="polite"></span></div><div id="resumePaper" class="resume-paper"><iframe id="portfolioCvFrame" title="Live A4 resume preview" sandbox="allow-same-origin allow-modals"></iframe></div></div>
+    <div class="resume-workspace"><div class="resume-preview-label"><span>LIVE A4 PREVIEW</span><span id="resumePages" aria-live="polite"></span></div><div id="resumePaper" class="resume-paper"><iframe id="portfolioCvFrame" title="Live A4 resume preview" sandbox="allow-same-origin allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe></div></div>
   </div>
   <footer class="resume-toolbar"><div class="resume-toolbar-feedback"><span id="resumeSaveState" class="resume-save-state" role="status" aria-live="polite">Saved</span><p id="resumeStatus" class="product-status" role="status" aria-live="polite"></p></div><div class="product-actions"><button type="button" class="platform-button" id="resumeReset" onclick="resetResumePreferences()">Reset changes</button><button type="button" class="platform-button" id="resumeSave" onclick="saveResumePreferences()">Save preferences</button><button type="button" class="platform-button primary" id="printPortfolioCvButton" onclick="printPortfolioCv()" disabled>Export PDF</button></div></footer>
 </dialog>
@@ -3878,8 +3897,12 @@ Dedicated to learning cybersecurity fundamentals, networking, and ethical hackin
 
 
 
-    <label for="certificateFile">
-      Certificate File
+    <label for="certificateUrl" data-en-html="Certificate URL" data-ar-html="رابط الشهادة">Certificate URL</label>
+    <input type="url" id="certificateUrl" inputmode="url" autocomplete="url" placeholder="https://example.com/verify" maxlength="2048">
+    <p class="file-hint" data-en-html="Add a public HTTPS link or upload a file below. Choose one." data-ar-html="أضف رابط HTTPS عامًا أو ارفع ملفًا أدناه. اختر أحدهما.">Add a public HTTPS link or upload a file below. Choose one.</p>
+
+    <label for="certificateFile" data-en-html="Certificate File (optional)" data-ar-html="ملف الشهادة (اختياري)">
+      Certificate File (optional)
     </label>
 
 
@@ -3996,7 +4019,7 @@ Dedicated to learning cybersecurity fundamentals, networking, and ethical hackin
 
   <div class="platform-footer-bottom">
     <span>© <span id="year"></span> Deviloq</span>
-    <span>Deviloq v2.3.7</span>
+    <span>Deviloq v2.3.8</span>
   </div>
 </footer>
 

@@ -40,3 +40,7 @@ The v2.3.6 release APK keeps the stable release certificate and package ID `io.m
 ## Updating to v2.3.7
 
 The v2.3.7 release APK updates public site links to `https://deviloq.github.io/`. It retains the stable release certificate and package ID `io.mydevfoliohub.app`, and increases `versionCode` to 8, so it can update v2.3.4–v2.3.6 stable installations. An installation still signed with the original v2.3.1 debug certificate must first use the v2.3.4 one-time transition APK described above, then install v2.3.7.
+
+## Updating to v2.3.8
+
+The v2.3.8 release APK simplifies the owner dashboard on mobile and adds certificate links to the portfolio and Resume Studio. It keeps the stable signing certificate and package ID `io.mydevfoliohub.app`, with `versionCode` 9. It updates v2.3.4–v2.3.7 stable installations. An original v2.3.1 debug installation still needs the v2.3.4 one-time transition APK first.

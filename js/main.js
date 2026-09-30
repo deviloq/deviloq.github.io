@@ -353,6 +353,16 @@
   document.addEventListener("click", event => {
     if (mobileSiteNav?.open && !mobileSiteNav.contains(event.target)) mobileSiteNav.open = false;
   });
+  const dashboardMobileCreate = document.getElementById("dashboardMobileCreate");
+  dashboardMobileCreate?.addEventListener("click", event => {
+    if (event.target.closest("button")) dashboardMobileCreate.open = false;
+  });
+  dashboardMobileCreate?.addEventListener("keydown", event => {
+    if (event.key === "Escape" && dashboardMobileCreate.open) {
+      dashboardMobileCreate.open = false;
+      dashboardMobileCreate.querySelector("summary")?.focus();
+    }
+  });
   window.addEventListener("resize", () => {
     if (window.innerWidth > 980 && mobileSiteNav) mobileSiteNav.open = false;
   });
@@ -3986,7 +3996,7 @@
     const paragraph = value => value ? '<p dir="auto">' + text(value).replace(/\r?\n/g, "<br>") + "</p>" : "";
     const link = (url, label) => {
       const safe = safeHttpUrl(url || "");
-      return safe ? '<a dir="auto" href="' + text(safe) + '">' + text(label || safe) + "</a>" : "";
+      return safe ? '<a dir="auto" href="' + text(safe) + '" target="_blank" rel="noopener noreferrer">' + text(label || safe) + "</a>" : "";
     };
     const section = (heading, rows) => rows.length
       ? "<section><h2>" + text(heading) + "</h2>" + rows.join("") + "</section>" : "";
@@ -3995,10 +4005,10 @@
       const parsed = new Date(String(value).slice(0, 10) + "T00:00:00");
       return Number.isNaN(parsed.getTime()) ? "" : parsed.toLocaleDateString("en", {month:"short",year:"numeric"});
     };
-    const entry = (title, meta, description, url) =>
+    const entry = (title, meta, description, url, urlLabel) =>
       '<article><h3 dir="auto">' + text(title) + "</h3>" +
       (meta ? '<p class="meta" dir="auto">' + text(meta) + "</p>" : "") +
-      paragraph(description) + (url ? '<p class="item-link">' + link(url) + "</p>" : "") + "</article>";
+      paragraph(description) + (url ? '<p class="item-link">' + link(url, urlLabel) + "</p>" : "") + "</article>";
     const name = profile.display_name || profile.username;
     const socials = getProfileSocialLinks(profile);
     const contacts = [
@@ -4019,7 +4029,8 @@
     const work = items => items.map(item => entry(item.title,
       Array.isArray(item.tags) ? item.tags.join(" · ") : "", item.description, item.link));
     const certificates = sections.certificates.map(item =>
-      entry(item.name, date(item.certificate_date), item.description || ""));
+      entry(item.name, [item.organization, date(item.certificate_date)].filter(Boolean).join(" · "),
+        item.description || "", getCertificateFileURL(item.file_path), "View certificate ↗"));
     const achievements = sections.achievements.map(item =>
       entry(item.title, date(item.badge_date), item.description));
     const skills = Array.isArray(profile.tech_stack) ? profile.tech_stack.filter(item => typeof item === "string" && item.trim()) : [];
@@ -5836,7 +5847,7 @@
 
     if (dashboardWelcome) {
       dashboardWelcome.textContent =
-        `Manage @${username}`;
+        `${uiText("Manage", "إدارة")} @${username}`;
     }
 
 
@@ -8017,6 +8028,10 @@
     });
 
     translateStaticInterface(isArabic);
+    if (isAdmin && currentProfile?.username) {
+      document.getElementById("dashboardWelcome").textContent =
+        `${uiText("Manage", "إدارة")} @${currentProfile.username}`;
+    }
     const authStatus = document.getElementById("authMessage");
     if (authStatus?.dataset.englishMessage) {
       const english = authStatus.dataset.englishMessage;
@@ -14128,6 +14143,12 @@
       return "";
     }
 
+    // Existing certificates store a Storage path. Link-only certificates use
+    // the same field so they work with the current database schema.
+    if (/^https?:\/\//i.test(filePath)) {
+      return safeHttpUrl(filePath);
+    }
+
 
     const {
       data
@@ -14142,11 +14163,7 @@
         );
 
 
-    return (
-      data?.publicUrl
-      ||
-      ""
-    );
+    return safeHttpUrl(data?.publicUrl || "");
   }
 
 
@@ -14249,7 +14266,7 @@
                     <div class="certificate-preview">
 
                         <img
-                            src="${fileURL}"
+                            src="${escapeHTML(fileURL)}"
                             alt="Certificate Preview"
                             class="certificate-object-image"
                         >
@@ -14286,6 +14303,10 @@
 
         }
 
+
+        else if (certificate.file_type === "text/uri-list") {
+          previewHTML = `<div class="certificate-preview"><div class="pdf-preview"><span aria-hidden="true">↗</span><span data-en-html="Online certificate" data-ar-html="شهادة إلكترونية">${uiText("Online certificate", "شهادة إلكترونية")}</span></div></div>`;
+        }
 
         card.innerHTML = `
 
@@ -14360,7 +14381,7 @@
                         class="view-certificate-btn"
                         onclick="viewCertificate('${certificate.id}')"
                     >
-                        View Certificate ↗
+                        <span data-en-html="View Certificate ↗" data-ar-html="عرض الشهادة ↗">${uiText("View Certificate ↗", "عرض الشهادة ↗")}</span>
                     </button>
 
                 </div>
@@ -14473,6 +14494,8 @@
       )
       .value =
       "";
+
+    document.getElementById("certificateUrl").value = "";
   }
 
 
@@ -14534,6 +14557,10 @@
         )
         .files[0];
 
+    const urlInput = document.getElementById("certificateUrl");
+    const rawCertificateUrl = urlInput.value.trim();
+    const certificateUrl = rawCertificateUrl && safeHttpUrl(rawCertificateUrl);
+
 
     if (!name) {
 
@@ -14555,12 +14582,20 @@
     }
 
 
-    if (!file) {
+    if (!file && !rawCertificateUrl) {
+      alert(uiText("Add a certificate URL or choose a PDF or image.", "أضف رابط الشهادة أو اختر ملف PDF أو صورة."));
+      return;
+    }
 
-      alert(
-        "Choose a PDF or image."
-      );
+    if (rawCertificateUrl && (!certificateUrl || !certificateUrl.startsWith("https://") || certificateUrl.length > 2048)) {
+      urlInput.setCustomValidity(uiText("Enter a valid HTTPS certificate URL.", "أدخل رابط شهادة HTTPS صالحًا."));
+      urlInput.reportValidity();
+      urlInput.addEventListener("input", () => urlInput.setCustomValidity(""), {once:true});
+      return;
+    }
 
+    if (file && certificateUrl) {
+      alert(uiText("Choose either a certificate URL or a file.", "اختر رابط الشهادة أو الملف، وليس كليهما."));
       return;
     }
 
@@ -14578,7 +14613,7 @@
     ];
 
 
-    if (
+    if (file &&
       !allowedTypes.includes(
         file.type
       )
@@ -14592,7 +14627,7 @@
     }
 
 
-    if (
+    if (file &&
       file.size >
       20 * 1024 * 1024
     ) {
@@ -14605,64 +14640,18 @@
     }
 
 
-    const safeFileName =
-      file.name
-        .replace(
-          /[^a-zA-Z0-9._-]/g,
-          "_"
-        );
-
-
-    const filePath =
-      `users/${currentUser.id}/certificates/`
-      +
-      Date.now()
-      +
-      "-"
-      +
-      crypto.randomUUID()
-      +
-      "-"
-      +
-      safeFileName;
-
-
-    /* UPLOAD FILE */
-
-    const {
-      error: uploadError
-    } =
-      await supabaseClient
-        .storage
-        .from(
-          "portfolio-files"
-        )
-        .upload(
-          filePath,
-          file,
-          {
-            contentType:
-            file.type,
-
-            upsert:
-              false
-          }
-        );
-
-
-    if (uploadError) {
-
-      console.error(
-        "Certificate upload error:",
-        uploadError
-      );
-
-
-      alert(
-        "Could not upload certificate file."
-      );
-
-      return;
+    let filePath = certificateUrl;
+    if (file) {
+      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      filePath = `users/${currentUser.id}/certificates/${Date.now()}-${crypto.randomUUID()}-${safeFileName}`;
+      const {error: uploadError} = await supabaseClient.storage
+        .from("portfolio-files")
+        .upload(filePath, file, {contentType: file.type, upsert: false});
+      if (uploadError) {
+        console.error("Certificate upload error:", uploadError);
+        alert(uiText("Could not upload certificate file.", "تعذّر رفع ملف الشهادة."));
+        return;
+      }
     }
 
 
@@ -14695,7 +14684,7 @@
           filePath,
 
           file_type:
-          file.type
+          file ? file.type : "text/uri-list"
 
         });
 
@@ -14710,14 +14699,7 @@
 
       /* REMOVE FILE IF DATABASE SAVE FAILED */
 
-      await supabaseClient
-        .storage
-        .from(
-          "portfolio-files"
-        )
-        .remove([
-          filePath
-        ]);
+      if (file) await supabaseClient.storage.from("portfolio-files").remove([filePath]);
 
 
       alert(
@@ -14834,7 +14816,7 @@
     /* DELETE FILE */
 
     if (
-      certificate.file_path
+      certificate.file_path && !/^https?:\/\//i.test(certificate.file_path)
     ) {
 
       const {
